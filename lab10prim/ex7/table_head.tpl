@@ -1,0 +1,13 @@
+<thead>
+    <tr>
+        <th>
+            Amount 
+        </th>
+        <th>
+            Details 
+        </th>
+        <th>
+            Date 
+        </th>
+    </tr>
+</thead>

@@ -1,0 +1,90 @@
+Budau Alexandru 342 C1
+
+Tema 2 - Tamagotchi
+
+Readme
+
+Fisierul timp.php
+	-contine clasa Timp care tine evidenta timpului relativ la joc; clasa e pusa in legatura cu tabela 'timp' care contine campurile 'id', 'start_up_time', 'forward_time'
+	-contine campurile aferente coloanelor tabelei 'timp':
+		-start_up_time - momentul inceperii jocului
+		-forward_time - numarul de ore trecute de la inceperea jocului
+	-contine metodele statice:
+		-create_time_table_if_not_exists - creaza tabela 'timp' daca nu exista 
+		-get_time - intoarce data curenta relativa la joc ca diferenta intre data reala si data inceperii jocului (start_up_time) la care se aduna forward_time
+		-forward_hour - incrementeaza ora si o salveaza in baza de date
+		-forward_day - incrementeaza ziua si o salveaza in baza de date
+		-get_current_day - pe baza datei curente intoarce ziua
+		-get_current_hour - pe baza datei curente intoarce ora
+
+
+Fieierul animalut.php
+	-include clasa Timp, biblioteca IDIORM
+	-contine clasa Animalut care contine trasaturi si actiuni asupra trasaturilor; clasa e pusa in legatura cu tabelele 'animalute', 'caracteristici', 'actiuni', 'fericire'
+	-contine campurile aferente coloanelor din tabela 'animalute':
+		-id - id animalut
+		-type - tipul animalutului
+		-name - numele animalutului
+		-timestamp_hour - data la care s-au actualizat ultima oara trasaturile care se modifica dupa fiecare ora
+		-timestamp_day - data la care s-au actualizat ultima oara trasaturile care se modifica dupa fiecare zi
+		-timestamp_sad - data la care animalutul a devenit trist
+		-timestamp_inactive - data la care animalutul a devenit inactiv (doarme, se antreneaza)
+		-active - starea animalutului (0 treaz, 1 doarme, 2 se antreneaza)
+	-contine campurile aferente tabelei 'caracteristici':
+		-greutate
+		-inaltime
+		-varsta
+		-sanatate
+		-foame
+		-sete
+		-somn
+		-vezica
+		-toaleta
+		-distractie
+		-fericire
+		-viata
+	-constructor - seteaza id-ul animalutului primit ca parametru, configureaza cheia primara a tabelei caractristici
+	-metode publice (API)
+
+		apel fixtures.php
+			-create_info_table_if_not_exists - creaza tabela 'animalut' daca nu exista
+			-create_actions_table_if_not_exists - creaza tabela 'actiuni' daca nu exista
+			-insert_into_actions_if_empty - populeaza tabela 'actiuni' conform celei din enunt
+			- create_happiness_table_if_not_exists - creaza tabela 'fericire' daca nu exista
+			- insert_into_happiness_if_empty - populeaza tabela 'fericire' conform celei din enunt
+			- create_stats_table_if_not_exists - creaza tabela 'caracteristici' daca nu exista; seamana cu cea din enunt - contine in plus campul id_animalut care refera cheia primara din tabela animalute pentru a permite adaugarea caracteristicilor tuturor animalutelor intr-o singura tabela
+
+		apel genereaza.php	
+			-insert_pet_info - obtine id animalut specificat prin nume si tip; daca animalutul nu exista se creaza pe loc cu timestamp_hour si timestamp_day generat cu ajutorul metodei Timp.get_time, cu starea 'treaz', si cu timestamp_sad 0
+
+		apel hraneste.php, bea.php, culca.php, trezeste.php, antreneaza.php, relexeaza.php, wc-v.php, wc-t.php, joaca.php, injectie.php, baie.php, caracteristici.php, hour-pass.php
+
+			-load_pet_info - extrage informatiile din tabela 'animalute' in campurile private obiectului de tip Animalut; se specifica in query id-ul extras in urma apelului insert_pet_info
+			-check_hourly_update - verifica daca e nevoie sa se acualizeze trasaturile in urma trecerii timpului
+				-obtine data curenta a jocului si scade din ea timestamp_hour
+				-verifica cate ore sau zile s-au scurs
+				-se parcurge tabela 'caracteristici'
+					-in caz ca s-au scurs ore   se actualizeaza valorile care au rata_modificre setata pe 'H' si actualizeaza timestamp_hour la data curenta jocului
+					-in caz ca s-au scurs zile se actualizeaza valorile care au rata_modificre setata pe 'Z' i actualizeaza timestamp_day la data curenta jocului
+			-check_happiness 
+				-apeleaza metoda privata load_stats pentru a incarca toate trasaturile din 'caractersistici' in obiectul de tip Animalut alaturi de numele care se afla in 'animalute'
+				-parcurge tabela 'fericire' si verifica daca trasaturile curente se afla intre limitele specificate
+				-daca animalutul e fericit sau daca animalutul devine nefericit pentru prima data se actualizeaza caracteristica 'fericire' in tabela 'Caracteristici'
+				-daca animalutul devine nefericit pentru prima data se actualizeaza si timestamp_sad la data curenta jocului
+				-daca animalutul era nefericit si inainte, se verifica daca au trecut 3 zile de cand el e in aceasta stare pentru a apela metoda privata destroy_pet care actualizeaza caracteristica 'viata' din tabela 'Caracteristici' la 0
+			-update_pet_info
+				-actualizeaza tabela 'animalute' conform campurilor private din obiectul de tip Animalut
+			-get_json_from_stats
+				-apeleaza metoda privata load_stats pentru a incarca toate trasaturile din 'caractersistici' in obiectul de tip Animalut alaturi de numele care se afla in 'animalute'
+				-creaza un obiect de tip JSON pe baza trasaturilor
+
+		-metoda privata update_stats_for_action
+			-aduce din tabela 'caracteristici' in obiect doar acele trasaturi care vor fi actualizate de actiunea specificata ca parametru
+			-trasaturile sunt actualizate local si salvate in baza de date
+			-OBS pentru a aduce trasaturile animalutului curent (specificat de id) care vor fi modificate de o anumita actiune am format urmatorul Query : 
+			sqlite> select * from caracteristici  a JOIN actiuni b on a.atribut = b.atribut where b.nume_actiune = <actiune> and a.id_animalut = this.id;
+
+		-metodele private de tip update_* sunt cele apelate de metodele de tip actiune (eat, drink, ... , wake, relax)
+			-ele modifica campurile locale care reprezinta trasaturi ale animalutului
+
+		-metodele publice de tip actiune (eat, drink, ... , wake, relax) sunt cele apelate de scripturile care modifica trasaturile animalutului pe baza unor actiuni sau pe baza trecerii timpului : hraneste.php, bea.php, culca.php, trezeste.php, antreneaza.php, relexeaza.php, wc-v.php, wc-t.php, joaca.php, injectie.php, baie.php

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<h2>A heading!</h2>
+<p>Hello world!</p>
+<ul><li>A list!</li></ul>
+<table><th>A table!</th></table>
+
+
+<script>
+        function iter(el){
+                if (el.tagName != undefined){
+                        console.log(el.tagName);
+
+                        var childs = el.childNodes;
+
+                        for (var i = 0; i < childs.length; i++) {
+                                iter(childs[i]);
+                        }
+                }
+        }
+        
+        document.addEventListener("DOMContentLoaded", iter(document.querySelector('html')), false);
+</script>

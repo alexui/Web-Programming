@@ -1,0 +1,28 @@
+<!DOCTYPE>
+<html>
+        <body>
+                <div>
+                        <img src="ex3.jpg" />
+                </div>
+        </body>
+</html>
+
+<script>
+        console.log('script - start');
+        
+        
+        function document_loaded() {
+                console.log('document ready');
+        }
+        
+        var img = document.querySelector('img');
+        img.onload = function () {
+                console.log('image loaded');
+        };
+        
+        
+        document.addEventListener("DOMContentLoaded", document_loaded, false);
+        
+        
+        console.log('script - finish');
+</script>

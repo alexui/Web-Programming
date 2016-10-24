@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tema3</title>
+	<link rel="stylesheet" type="text/css" href="chat.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/checker.js"></script>
+	<script type="text/javascript" src="chat.js"></script>
+</head>
+<body>
+	<header id="main_header">
+		<div id="header_container" class="container">
+			<span>Number of users: </span>
+			<div id="cregistered">0</div>	
+		</div>
+	</header>
+	<article id="main">
+		
+	</article>
+	<footer id="main_footer"></footer>
+</body>
+<script type="text/javascript">
+
+    var main = function () {
+
+		load_header();
+        load_welcome_form();
+        load_nav();
+        load_chat_window();
+        load_chat_send();
+    }
+
+    main();
+
+</script>
+</html>

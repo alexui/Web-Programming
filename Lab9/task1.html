@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title>PW - laborator 10: AJAX</title>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+	<link rel="stylesheet" href="css/text.css" media="screen" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript">
+	// ajax implementation (JSON) goes here
+
+	$(function() {
+
+		$("span.tooltip").mouseover(function() {
+
+			// var jsonData = { 'word' : 'test' };
+
+			var request = $.ajax({
+				url: 'script/wordJSON.php',
+				success: function(data, textStatus, jqXHR) {
+			        console.log("success " + textStatus);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					console.log("fail " + textStatus + " \n" + errorThrown);
+			    }
+			});
+
+			// request.done(function(response, textStatus, jqXHR) {
+			// 	var rsp = response.firstChild.firstChild.textContent;
+			// 	console.log(rsp);
+			// 	$(".rsp").text(rsp);
+			// }).fail(function(jqXHR, textStatus, errorThrown) {
+			// }).always(function() {
+			// });
+
+
+			// var jsonDataValue = {word:"test"};
+		 //    var postData = "jsonData=" + JSON.stringify(jsonDataValue);
+		 //    $(".rsp").text(postData);
+			// var request = $.ajax({
+			// 	url : "./script/wordJSON.php",
+			// 	type : "POST",
+			// 	data : postData,
+			// 	dataType: "json",
+			// 	contentType : "application/x-www-form-urlencoded",
+			// 	success: function(data, textStatus, jqXHR) {
+			//         console.log("success");
+			// 	},
+			// 	error: function (jqXHR, textStatus, errorThrown) {
+			// 		console.log("fail " + errorThrown);
+			//     }
+			// });
+
+			// var jsonDataValue = {"word":"test"};
+			// var json_upload = "jsonData=" + JSON.stringify(jsonDataValue);
+			// $(".rsp").text(json_upload);
+			// var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance 
+			// xmlhttp.open("POST", "script/wordJSON.php", true);
+			// xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			// xmlhttp.send(json_upload);
+
+
+			// xmlhttp.onreadystatechange = function() {
+			//     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+			//        // var myArr = JSON.parse(xmlhttp.responseText);
+			//         alert(xmlhttp.responseText);
+			//     }
+			// };
+
+			//after send method returns, check response
+			// if (xmlhttp.status == 200) {
+			//     // We got the server's response. Display the response text.
+			//     alert(xmlhttp.responseType);
+			// }
+			// else {
+			//     // Something went wrong. Display error code and error message.
+			//     alert("Error " + xmlhttp.status + ": " + xmlhttp.statusText);
+			// }
+						// request.done(
+			// 	function(response, textStatus, jqXHR) {
+			// 		$(".rsp").text(textStatus);
+			// 		var rsp = response.firstChild.firstChild.textContent;
+			// 		//var rsp = response;
+			// 		console.log(rsp);
+			// 		//$(".rsp").text(rsp);
+			// }).fail(function(jqXHR, textStatus, errorThrown) {
+			// }).always(function() {
+			// });
+
+		});
+	});
+
+	</script>
+</head>
+
+<body>
+	<p>Pellentesque <span class="tooltip">habitant</span> morbi tristique <span class="tooltip">senectus</span> et netus et malesuada fames ac turpis egestas. <span class="tooltip">Vestibulum</span> tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+	<p>Pellentesque habitant <span class="tooltip">morbi</span> tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, <span class="tooltip">ultricies</span> eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+	<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac <span class="tooltip">turpis</span> egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend <span class="tooltip">leo</span>.</p>
+
+	<hr>
+	<p class="rsp"></p>
+</body>
+</html>

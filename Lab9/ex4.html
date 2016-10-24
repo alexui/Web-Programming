@@ -1,0 +1,21 @@
+<!DOCTYPE>
+<html>
+        <body>
+                <div>
+                        <form>
+                                <input name="q">
+                                <button type="submit">go</button>
+                        </form>
+                </div>
+        </body>
+</html>
+
+<script>
+        var form = document.querySelector('form');
+        var function_ex4 = function(ev){
+                ev.preventDefault();
+                
+                console.log(document.querySelector('[name=q]').value);
+        };
+        form.addEventListener('submit', function_ex4, true);
+</script>

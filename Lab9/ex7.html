@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+
+<input type="text"/>
+
+<script>
+        var el = document.querySelector('input');
+        var text = 'răzuiește și câștigi!';
+        var index = 0;
+        
+        var magic_keyboard = function(ev){
+                ev.preventDefault();
+                
+                var ch = text[index++];
+                
+                el.value += ch;
+                
+                if(index > text.length){
+                        index = 0;
+                        el.value = '';
+                }
+        };
+        
+        el.addEventListener('keypress', magic_keyboard, false);
+</script>

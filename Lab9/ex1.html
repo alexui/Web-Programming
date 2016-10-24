@@ -1,0 +1,26 @@
+<!DOCTYPE>
+<html>
+        <body>
+                <div>
+                        <p id="helloworld">
+                                hello world
+                        </p>
+                </div>
+        </body>
+</html>
+
+<style>
+        
+</style>
+
+<script>
+        var colors = ['red', 'green', 'blue', 'black'];
+        
+        function changeColor(){
+                var el = document.querySelector('#helloworld');
+                el.style.color = colors[Math.floor(Math.random()*colors.length)];
+        }
+        
+        setInterval(changeColor, 200);
+</script>
+

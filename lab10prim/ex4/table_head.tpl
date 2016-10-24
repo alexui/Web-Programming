@@ -1,0 +1,10 @@
+<thead>
+    <tr>
+        <th>
+            Nume 
+        </th>
+        <th>
+            Varsta 
+        </th>
+    </tr>
+</thead>

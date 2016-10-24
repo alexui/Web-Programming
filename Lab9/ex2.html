@@ -1,0 +1,16 @@
+<!DOCTYPE>
+<html>
+        <body>
+                <div>
+                        <p id="coord-x"></p>
+                        <p id="coord-y"></p>
+                </div>
+        </body>
+</html>
+
+<script>
+        document.onmousemove = function(e){
+                document.querySelector('#coord-x').textContent = e.pageX;
+                document.querySelector('#coord-y').textContent = e.pageY;
+        }
+</script>

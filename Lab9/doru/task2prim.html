@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <title>PW - laborator 10: AJAX</title>
+        <link rel="stylesheet" href="css/text.css" media="screen" />
+        <script type="text/javascript">
+            var HTTP = {
+                // This is a list of XMLHttpRequest-creation factory functions to try
+                _factories: [
+                    function() { return new XMLHttpRequest(); },
+                    function() { return new ActiveXObject("Msxml2.XMLHTTP"); },
+                    function() { return new ActiveXObject("Microsoft.XMLHTTP"); }
+                ],
+                // When we find a factory that works, store it here.
+                _factory: null,
+                // Create and return a new XMLHttpRequest object.
+                //
+                // The first time we're called, try the list of factory functions until
+                // we find one that returns a non-null value and does not throw an
+                // exception. Once we find a working factory, remember it for later use.
+                //
+                newRequest: function() {
+                    if (HTTP._factory != null) return HTTP._factory();
+ 
+                    for(var i = 0; i < HTTP._factories.length; i++) {
+                        try {
+                            var factory = HTTP._factories[i];
+                            var request = factory();
+                            if (request != null) {
+                                HTTP._factory = factory;
+                                return request;
+                            }
+                        }
+                        catch(e) {
+                            continue;
+                        }
+                    }
+                    // If we get here, none of the factory candidates succeeded,
+                    // so throw an exception now and for all future calls.
+                    HTTP._factory = function() {
+                        throw new Error("XMLHttpRequest not supported");
+                    }
+                    HTTP._factory ();
+                }
+            };
+            
+            
+            
+            function tooltip(event, word){
+                var url = 'script/wordXML.php';
+                var request = HTTP.newRequest();
+ 
+                request.onreadystatechange = function() {
+                    if (request.readyState == 4) {
+                        if (request.status == 200){
+                            var tooltip_text = request.responseXML.getElementsByTagName("definition")[0].childNodes[0].nodeValue;;
+                            var el = event.target;
+                            
+                            if (el.querySelector(".tooltip_container") == null){
+                                var x = event.clientX, y = event.clientY;
+                                var divtt = document.createElement("div");
+                                divtt.className = "tooltip_container";
+                                divtt.innerHTML = tooltip_text;
+                                divtt.style.top = (y) + 'px';
+                                divtt.style.left = (x) + 'px';
+                                el.appendChild(divtt);
+                            }
+                        }
+                    }
+                }
+            
+                request.open("POST", url);
+                request.setRequestHeader("Content-Type", "application/xml"); 
+            
+                var content = '<content><word>' + word + '</word></content>';
+            
+                request.send(content);
+            }
+            
+            function save_text(text){
+                var url = 'script/ex3.php';
+                var request = HTTP.newRequest();
+                var content = 'data_text=' + text;
+                
+                request.open("POST", url);
+                request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                request.send(content);
+            }
+            
+            function update_options(dataList){
+                var url = 'script/ex4.php';
+                var request = HTTP.newRequest();
+                
+                request.onreadystatechange = function() {
+                    if (request.readyState == 4) {
+                        if (request.status == 200){
+                            var options = JSON.parse(request.responseText);
+                            
+                            if (dataList.childNodes.length != options.length){
+                                while (dataList.firstChild) {
+                                    dataList.removeChild(dataList.firstChild);
+                                }
+                                
+                                options.forEach(function(item) {
+                                    var option = document.createElement('option');
+                                    option.value = item.text;
+                                    dataList.appendChild(option);
+                                });
+                            }
+                        }
+                    }
+                }
+            
+                request.open("GET", url);
+                request.send('');
+            }
+        </script>
+    </head>
+
+    <body>
+        <input type="text" id="text_field" value="" list="ajax_text_list"/>
+        <datalist id="ajax_text_list">
+        </datalist>
+
+        <p>Pellentesque <span class="tooltip">habitant</span> morbi tristique <span class="tooltip">senectus</span> et netus et malesuada fames ac turpis egestas. <span class="tooltip">Vestibulum</span> tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+        <p>Pellentesque habitant <span class="tooltip">morbi</span> tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, <span class="tooltip">ultricies</span> eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac <span class="tooltip">turpis</span> egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend <span class="tooltip">leo</span>.</p>
+    </body>
+</html>
+
+<script>
+    var tooltip_container = document.getElementById("tooltip");
+    
+    var elems = document.getElementsByClassName("tooltip");
+    for (i = 0; i < elems.length; i++){
+        elems[i].onmouseover = function(e){
+            var word = this.innerHTML;
+            tooltip(e, word, tooltip_container);
+        };
+        
+        elems[i].onmouseout = function(e){
+            var child = this.querySelector(".tooltip_container");
+            if (child){
+                this.removeChild(this.querySelector(".tooltip_container"));
+            }
+        };
+    }
+    
+    var timer = null;
+    var input = document.getElementById("text_field");
+    
+    input.onkeyup = function(e){
+        var text = e.target.value;
+        if (timer){
+            clearTimeout(timer);
+        }
+        if (text != ''){
+            timer = setTimeout(function(){save_text(text);}, 1000);
+        }
+    }
+    
+    // ex 4 
+    var dataList = document.getElementById("ajax_text_list");
+    setInterval(function(){update_options(dataList);}, 500);
+</script>
